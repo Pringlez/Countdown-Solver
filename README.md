@@ -41,8 +41,13 @@ Here's some stuff about how efficient my code is, including an analysis of how m
 ## Results
 My script runs very quickly, and certainly within the 30 seconds allowed in the Coutdown letters game.
 
-
 ## References
-[1]: http://www.oxfordlearnersdictionaries.com/wordlist/english/oxford3000/
-[2]: http://www.oxfordlearnersdictionaries.com/wordlist/english/oxford3000/
-[3]: http://www.oxfordlearnersdictionaries.com/wordlist/english/oxford3000/
+Below are references to algorithms, wordlists and other research sources found online.
+
+### Wordlists:
+These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
+some words are names of cities, towns and other locations.
+[1]: http://wordlist.aspell.net/dicts/
+
+Links and lists of words with frequencies, mainly for use in spell checker programs.
+[2]: http://www.kilgarriff.co.uk/bnc-readme.html
