@@ -44,10 +44,13 @@ My script runs very quickly, and certainly within the 30 seconds allowed in the 
 ## References
 Below are references to algorithms, wordlists and other research sources found online.
 
-### Wordlists:
+### Algorithms
+To be populated later.
+
+### Wordlists
 These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
 some words are names of cities, towns and other locations.
-[1]: http://wordlist.aspell.net/dicts/
+1. http://wordlist.aspell.net/dicts/
 
 Links and lists of words with frequencies, mainly for use in spell checker programs.
-[2]: http://www.kilgarriff.co.uk/bnc-readme.html
+2. http://www.kilgarriff.co.uk/bnc-readme.html
