@@ -48,9 +48,6 @@ Below are references to algorithms, wordlists and other research sources found o
 To be populated later.
 
 ### Wordlists
-These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
-some words are names of cities, towns and other locations.
-1. http://wordlist.aspell.net/dicts/
-
-Links and lists of words with frequencies, mainly for use in spell checker programs.
-2. http://www.kilgarriff.co.uk/bnc-readme.html
+1. These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
+some words are names of cities, towns and other locations. Link: http://wordlist.aspell.net/dicts/
+2. Links and lists of words with frequencies, mainly for use in spell checker programs. Link: http://www.kilgarriff.co.uk/bnc-readme.html
