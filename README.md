@@ -2,19 +2,19 @@
 ## G00299626
 
 ## Countdown Letters Game Solver
-Insert introduction here.
-This gist is just an example of how you might layout your submission.
-Please change it to suit your needs.
-
-## Background
+### Goal
+The game countdown requires a word of nine random letters which must contain at least three vowels and four consonants.
+The countdown solver must find the longest possible word from a dictionary file loaded into the program. It must be an anagram of some or all of the letters in the generated word.
+### Background
+A number of countdown solvers already exist on the internet. Naming just a few sites like
 The first task I completed as part of this project was to Google "countdown letters game solver".
 Google gave me two relevant results on the first page, these are [Cool Project name][2] and [Cool Solver][3].
 
-## Words list
-My words list is in the file [wordslist.txt](wordslist.txt) in this repoistory/gist.
-I got my words list from the [Oxford Learner's Dictionaries][1] website.
+## Words Lists
+* The following word lists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as some words are names of cities, towns and other locations. The link to resource is [here.](http://wordlist.aspell.net/dicts)
+* Links and lists of words with frequencies, mainly for use in spell checker programs. The link to resource is [here.](http://www.kilgarriff.co.uk/bnc-readme.html)
 
-## Python script
+## Python Scripts
 My script is in the files [solver.py](solver.py) in this repository and it works as follows.
 The most important section is:
 
@@ -42,12 +42,4 @@ Here's some stuff about how efficient my code is, including an analysis of how m
 My script runs very quickly, and certainly within the 30 seconds allowed in the Coutdown letters game.
 
 ## References
-Below are references to algorithms, wordlists and other research sources found online.
-
-### Wordlists:
-These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
-some words are names of cities, towns and other locations.
-[1]: http://wordlist.aspell.net/dicts/
-
-Links and lists of words with frequencies, mainly for use in spell checker programs.
-[2]: http://www.kilgarriff.co.uk/bnc-readme.html
+Below are references to algorithms, word lists and other research sources found online.
