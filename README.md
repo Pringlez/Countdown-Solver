@@ -11,8 +11,10 @@ The first task I completed as part of this project was to Google "countdown lett
 Google gave me two relevant results on the first page, these are [Cool Project name][2] and [Cool Solver][3].
 
 ## Words Lists
-* The following word lists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as some words are names of cities, towns and other locations. The link to resource is [here.](http://wordlist.aspell.net/dicts)
-* Links and lists of words with frequencies, mainly for use in spell checker programs. The link to resource is [here.](http://www.kilgarriff.co.uk/bnc-readme.html)
+I've complied a number of different word lists from different sites and web applications. Here is the most up-to date references to these word lists.
+
+* The following word lists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as some words are names of cities, towns and other locations. The link to the resource [here.](http://wordlist.aspell.net/dicts)
+* Another site that contains lists of words with their frequencies, mainly for use in spell checker programs. The link to the resource [here.](http://www.kilgarriff.co.uk/bnc-readme.html)
 
 ## Python Scripts
 My script is in the files [solver.py](solver.py) in this repository and it works as follows.
@@ -44,10 +46,4 @@ My script runs very quickly, and certainly within the 30 seconds allowed in the 
 ## References
 Below are references to algorithms, word lists and other research sources found online.
 
-### Algorithms
-To be populated later.
-
-### Wordlists
-1. These wordlists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as
-some words are names of cities, towns and other locations. Link: http://wordlist.aspell.net/dicts/
-2. Links and lists of words with frequencies, mainly for use in spell checker programs. Link: http://www.kilgarriff.co.uk/bnc-readme.html
+* The following link [here](http://stackoverflow.com/questions/8286554/find-anagrams-for-a-list-of-words) contains usful information when I first starting search for ideas on how to approach this countdown conundrum problem
