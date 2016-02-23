@@ -1,12 +1,20 @@
 # Anagram Solver - John Walsh
+# G00299626
+# Version 1a
 
 import random
+import timeit
+
+word_list = 'final.wordlist-2.txt'
 
 vowelsList = list()
 consonantsList = list()
+wordmap = dict()
+userOptions = True
 
-def build_lists():
-    # Building Vowels List
+# Builds the vowels & consonants lists
+def build_letter_lists():
+    # Building vowels list
     for i in range(0, 5):
         vowelsList.append('u')
     for i in range(0, 13):
@@ -17,7 +25,7 @@ def build_lists():
     for i in range(0, 21):
         vowelsList.append('e')
     
-    # Building Consonants List
+    # Building consonants list
     for i in range(0, 1):
         consonantsList.append('j')
         consonantsList.append('k')
@@ -48,41 +56,92 @@ def build_lists():
         consonantsList.append('s')
         consonantsList.append('t')
 
+# Builds the wordmap dictionary
+def build_dictionary(filename):
+    f = open(filename, 'r')
+    
+    # Continue looping until end of file is encountered
+    for word in f:
+        word = word.rstrip()
+        word_hash = hash(''.join(sorted(word)))
+        
+        if not word:
+            print("\nEnd of '%s' found!" % filename)
+            break
+            
+        wordmap[hash(word_hash)] = word
+
+# Prints the user's options
 def print_options():
     print("\nCountdown Solver - Options\n")
     print("1: Generate Random Conundrum")
     print("2: Enter Nine Characters String")
     print("3: Exit")
 
-# Get input from user
+# Get user's option
 def get_option():
     print_options()
     return input('\nEnter Option: ')
 
-# Get input from user
+# Get user's conundrum string of letters
 def get_userstring():
     print("\nMust be at least 4 consonants and 3 vowels!")
     return input('Enter String: ')
 
-# Runs the application
-def run_app():
-    build_lists()
-    option = get_option()
+# Processes the user's option
+def process_option(option):
+    # Exit program
     if(option == "3"):
         exit()
     else:
+        # Generate a random conundrum
         if(option == "1"):
             randomListChars = list()
             for i in range(0, 4):
                 randomListChars.append(random.choice(vowelsList))
             for i in range(0, 5):
                 randomListChars.append(random.choice(consonantsList))
-            print("\nConundrum: " + ''.join(randomListChars))
+            return ''.join(randomListChars)
+        # Else get a user's conundrum
         elif(option == "2"):
-            user_input = get_userstring()
-            print("\nUser Input: " + user_input)
-            
+            return get_userstring()
+
+# Gets the longest anagram in a string of characters
+def get_anagram(conundrum):
+    # Sorting the conundrum to search the wordmap
+    conundrum = ''.join(sorted(conundrum))
+    anagram = wordmap.get(hash(conundrum))
+    # If not null / none then compare sorted anagram & conundrum
+    if anagram is not None:
+        if sorted(anagram) == sorted(conundrum):
+            return anagram
+
+def check_conundrum(conundrum):
+    print("\nConundrum: " + conundrum)
+    anagram = get_anagram(conundrum)
+    if anagram is not None:
+        print("Anagram: " + get_anagram(conundrum))
+    else:
+        print("No anagram found!")
+
+# Runs the application
+def run_app():
+    conundrum = "decuionat"
+    
+    if(userOptions == True):
+        while 1:
+            build_letter_lists()
+            conundrum = process_option(get_option())
+            check_conundrum(conundrum)
+    else:
+        check_conundrum(conundrum)
+
+# Preprocess the dictionary
+build_dictionary(word_list)
+        
 # Timing the algorithm
-if __name__ == '__main__':
-    import timeit
-    print(timeit.timeit("run_app()", setup="from __main__ import run_app"))
+if(userOptions != True):
+    from solver import run_app
+    print(timeit.timeit('run_app()', setup='from solver import run_app', number=1))
+else:
+    run_app()
