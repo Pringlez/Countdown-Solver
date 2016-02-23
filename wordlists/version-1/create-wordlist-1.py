@@ -5,6 +5,7 @@
 input_file1 = 'mit.10000.words.txt'
 input_file2 = 'large.wordlist.txt'
 input_file3 = '9.letter.words.final.txt'
+
 output_file = open('final.wordlist-1.txt', 'w')
 
 wordmap = dict()
