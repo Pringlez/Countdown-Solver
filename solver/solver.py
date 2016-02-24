@@ -10,11 +10,12 @@ word_list = 'final.wordlist-2.txt'
 vowelsList = list()
 consonantsList = list()
 wordmap = dict()
-userOptions = True
+userOptions = False
 
 # Builds the vowels & consonants lists
 def build_letter_lists():
     # Building vowels list
+    vowelsList.clear()
     for i in range(0, 5):
         vowelsList.append('u')
     for i in range(0, 13):
@@ -26,6 +27,7 @@ def build_letter_lists():
         vowelsList.append('e')
     
     # Building consonants list
+    consonantsList.clear()
     for i in range(0, 1):
         consonantsList.append('j')
         consonantsList.append('k')
@@ -59,18 +61,17 @@ def build_letter_lists():
 # Builds the wordmap dictionary
 def build_dictionary(filename):
     f = open(filename, 'r')
-    
+    counter = 0
     # Continue looping until end of file is encountered
     for word in f:
         word = word.rstrip()
-        word_hash = hash(''.join(sorted(word)))
+        hash_key = hash(''.join(sorted(word)))
+        if hash_key in wordmap:
+            wordmap.get(hash_key).append(word)
+            counter += 1
+        else:
+            wordmap.update({hash_key:[word]})
         
-        if not word:
-            print("\nEnd of '%s' found!" % filename)
-            break
-            
-        wordmap[hash(word_hash)] = word
-
 # Prints the user's options
 def print_options():
     print("\nCountdown Solver - Options\n")
@@ -88,7 +89,20 @@ def get_userstring():
     print("\nMust be at least 4 consonants and 3 vowels!")
     return input('Enter String: ')
 
+def generate_conundrum():
+    randomListChars = list()
+    for i in range(0, 4):
+        random.shuffle(vowelsList)
+        randomListChars.append(vowelsList.pop())
+    for i in range(0, 5):
+        random.shuffle(consonantsList)
+        randomListChars.append(consonantsList.pop())
+    # Rebuild the lists after conundrum generation
+    build_letter_lists()
+    return ''.join(randomListChars)
+
 # Processes the user's option
+#def process_option(option, vowelsList, consonantsList):
 def process_option(option):
     # Exit program
     if(option == "3"):
@@ -96,52 +110,48 @@ def process_option(option):
     else:
         # Generate a random conundrum
         if(option == "1"):
-            randomListChars = list()
-            for i in range(0, 4):
-                randomListChars.append(random.choice(vowelsList))
-            for i in range(0, 5):
-                randomListChars.append(random.choice(consonantsList))
-            return ''.join(randomListChars)
+            return generate_conundrum()
         # Else get a user's conundrum
         elif(option == "2"):
             return get_userstring()
+        else:
+            print("\nPlease enter valid option!")
 
 # Gets the longest anagram in a string of characters
 def get_anagram(conundrum):
-    # Sorting the conundrum to search the wordmap
-    conundrum = ''.join(sorted(conundrum))
-    anagram = wordmap.get(hash(conundrum))
-    # If not null / none then compare sorted anagram & conundrum
-    if anagram is not None:
-        if sorted(anagram) == sorted(conundrum):
-            return anagram
-
-def check_conundrum(conundrum):
+    # Sorting the conundrum & hashing key to search the wordmap
     print("\nConundrum: " + conundrum)
-    anagram = get_anagram(conundrum)
-    if anagram is not None:
-        print("Anagram: " + get_anagram(conundrum))
+    conundrum = ''.join(sorted(conundrum))
+    anagram_list = wordmap.get(hash(conundrum))
+    # If not null / none then display best anagram(s)
+    if anagram_list is not None:
+        print("Anagram(s): " + ', '.join(anagram_list))
     else:
-        print("No anagram found!")
+        print("Anagram(s): None")
+
+# Preprocess the dictionary & letter lists
+def preprocess():
+    print("\nPreprocessing...")
+    build_dictionary(word_list)
+    build_letter_lists()
 
 # Runs the application
 def run_app():
     conundrum = "decuionat"
-    
     if(userOptions == True):
         while 1:
-            build_letter_lists()
             conundrum = process_option(get_option())
-            check_conundrum(conundrum)
+            if(conundrum is not None):
+                get_anagram(conundrum)
     else:
-        check_conundrum(conundrum)
+        get_anagram(conundrum)
 
-# Preprocess the dictionary
-build_dictionary(word_list)
-        
+preprocess()        
+
 # Timing the algorithm
 if(userOptions != True):
     from solver import run_app
     print(timeit.timeit('run_app()', setup='from solver import run_app', number=1))
 else:
+    preprocess()
     run_app()
