@@ -89,20 +89,33 @@ def get_userstring():
     print("\nMust be at least 4 consonants and 3 vowels!")
     return input('Enter String: ')
 
-def generate_conundrum():
+# Create a random conundrum, depending on random number generated 
+def create_conundrum():
+    # Generating a random number & calling function to generate conundrum
+    randomNumber = random.randint(0,2)
+    if(randomNumber is 0):
+        conundrum = generate_conundrum(3, 6)
+    elif(randomNumber is 1):
+        conundrum = generate_conundrum(4, 5)
+    else:
+        conundrum = generate_conundrum(5, 4)
+    return ''.join(conundrum)
+
+# Function used to pick a random amount of vowels & consonants
+def generate_conundrum(vowelAmount, consonantAmount):
+    # Store characters in a list & return list
     randomListChars = list()
-    for i in range(0, 4):
+    for i in range(0, vowelAmount):
         random.shuffle(vowelsList)
         randomListChars.append(vowelsList.pop())
-    for i in range(0, 5):
+    for i in range(0, consonantAmount):
         random.shuffle(consonantsList)
         randomListChars.append(consonantsList.pop())
     # Rebuild the lists after conundrum generation
     build_letter_lists()
-    return ''.join(randomListChars)
-
+    return randomListChars
+    
 # Processes the user's option
-#def process_option(option, vowelsList, consonantsList):
 def process_option(option):
     # Exit program
     if(option == "3"):
@@ -110,7 +123,7 @@ def process_option(option):
     else:
         # Generate a random conundrum
         if(option == "1"):
-            return generate_conundrum()
+            return create_conundrum()
         # Else get a user's conundrum
         elif(option == "2"):
             return get_userstring()
@@ -146,11 +159,10 @@ def run_app():
     else:
         get_anagram(conundrum)
 
-preprocess()        
-
 # Timing the algorithm
 if(userOptions != True):
     from solver import run_app
+    preprocess()
     print(timeit.timeit('run_app()', setup='from solver import run_app', number=1))
 else:
     preprocess()
