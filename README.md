@@ -19,50 +19,102 @@ The solver script located in the 'solver' directory. The script is quite basic r
 
 Maybe an interesting section to review. A recursive function that allows the script to check for anagrams from nine to four letter words. It still needs to be modified significantly to check for every single anagram in the conundrum.
 ```python
-def get_anagram(conundrum, length):
-    # Sorting the conundrum & hashing key to search the wordmap
-    anagram_list = check_dictionary(conundrum)
-    # If not null / none then display best anagram(s)
-    if anagram_list is not None:
-        print("Anagram(s): " + ', '.join(anagram_list))
-    else:
-        # Recursively call this function to check for anagrams of varying length
-        # Continue to call until conundrum length is lower then four
-        if(len(conundrum) > 3):
-            length -= 1
-            get_best_anagram(conundrum[:length], length)
+    def get_anagram(conundrum, length):
+        # Sorting the conundrum & hashing key to search the wordmap
+        anagram_list = check_dictionary(conundrum)
+        # If not null / none then display best anagram(s)
+        if anagram_list is not None:
+            print("Anagram(s): " + ', '.join(anagram_list))
         else:
-            print("Anagram(s): None Found!")
+            # Recursively call this function to check for anagrams of varying length
+            # Continue to call until conundrum length is lower then four
+            if(len(conundrum) > 3):
+                length -= 1
+                get_best_anagram(conundrum[:length], length)
+            else:
+                print("Anagram(s): None Found!")
 ```
 
 Previously this function looked like this:
 ```python
-def get_anagram(conundrum):
-    # Sorting the conundrum & hashing key to search the wordmap
-    print("\nConundrum: " + conundrum)
-    conundrum = ''.join(sorted(conundrum))
-    anagram_list = wordmap.get(hash(conundrum))
-    # If not null / none then display best anagram(s)
-    if anagram_list is not None:
-        print("Anagram(s): " + ', '.join(anagram_list))
-    else:
-        print("Anagram(s): None")
+    def get_anagram(conundrum):
+        # Sorting the conundrum & hashing key to search the wordmap
+        print("\nConundrum: " + conundrum)
+        conundrum = ''.join(sorted(conundrum))
+        anagram_list = wordmap.get(hash(conundrum))
+        # If not null / none then display best anagram(s)
+        if anagram_list is not None:
+            print("Anagram(s): " + ', '.join(anagram_list))
+        else:
+            print("Anagram(s): None")
 ```
-That didn't check for anagrams lower then nine letter, this is why I changed it.
+That didn't check for anagrams lower than nine letter, this is why I changed it.
+
+The latest python 'get_anagram' function as of 2/3/2016. The function has developed considerably over the last couple of days. The function know attempts look for all anagrams lower than the length of the conundrum. The function can be further optimized I believe. It's current time complexity with worst case scenario conundrum, will run in about seven seconds. I'm unsure of the space complexity.
+```python
+    def get_anagram(conundrum, length):
+
+        print("Looking for Anagram(s) of Length: %d" % length)
+
+        # If length equals conundrum length then check conundrum against wordmap
+        # Basically its checking if its the first time this function has been executed
+        if(len(conundrum) == length):
+            anagramsList = check_dictionary(conundrum)
+            # If not null / none then display best anagram(s)
+            if(anagramsList is not None):
+                print("\nAnagram(s): " + ', '.join(anagramsList) + "\n")
+            else:
+                # Start a recursive call to this function to check for anagrams of varying length
+                # Continue to call until conundrum length is lower then four
+                length -= 1
+                get_anagram(conundrum, length)
+        # Else, continue to look for anagram(s) of length lower then conundrum
+        else:
+            anagramsDict = dict()
+            anagramsList = list()
+
+            # Looping through the permutations & checking against dictionary
+            # If ana anagram is found store it in a dict structure
+            # This is currently the slowest part of the algorithm
+            for perm in get_perms(conundrum):
+                anagramsTempList = check_dictionary(perm[:length])
+                if anagramsTempList is not None:
+                    anagram = ''.join(anagramsTempList)
+                    if(anagram not in anagramsDict):
+                        anagramsDict[''.join(anagramsTempList)] = ""
+
+            # If anagramsDict contains anagrams then loop through them & add them to list to print
+            if anagramsDict:
+                for anagram, value in anagramsDict.items():
+                    anagramsList.append(anagram)
+                print("\nAnagram(s): " + ', '.join(anagramsList) + "\n")
+            else:
+                # Keep looping through until length of four letters
+                length -= 1
+                if(length > 3):
+                    get_anagram(conundrum, length)
+                else:
+                    print("\nAnagram(s): None Found!\n")
+```
 
 ## Preprocessing
 The solver script performs some preprocessing initially to build the lists for the random conundrum generator. The letter frequencies of the lists of vowels and consonants were taken from [here.](http://www.thecountdownpage.com/letters.htm)
 
 The function 'preprocess' handles the dictionary & lists generation. You can move the function call to the timing 'run_app' function to see how long it takes to build.
 ```python
-def preprocess():
-    print("\nPreprocessing...")
-    build_dictionary(word_list)
-    build_letter_lists()
+    def preprocess():
+        print("\nPreprocessing...")
+        build_dictionary(word_list)
+        build_letter_lists()
 ```
 
 ## Efficiency
-Here's some stuff about how efficient my code is, including an analysis of how many calculations my algorithm requires.
+The solver script has a number of different approaches to improve the overall speed of the algorithm. It first takes a random conundrum and sorts the letters which is then passed into a hashing function that will compute a key integer. The key is then passed into the wordmap to be checked against the stored hash keys. Normally words conflict when this hash table is generated, to counteract this words are place on lists much like how conflictions in a [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html) are handled in the programming lanaguage Java.
+
+There are number of problems that still exist in the solver script:
+* Anagrams of length eight or lower are not generated efficiently enough
+* The pre-processing required takes longer than expected
+* Hashing words to the dictionary is a slow process, might need changing later
 
 ## Results
 My script runs very quickly, and certainly within the 30 seconds allowed in the countdown letters game.
@@ -71,3 +123,5 @@ My script runs very quickly, and certainly within the 30 seconds allowed in the 
 Below are references to algorithms, word lists and other research sources found online.
 
 * The following link [here](http://stackoverflow.com/questions/8286554/find-anagrams-for-a-list-of-words) contains usful information when I first starting search for ideas on how to approach this countdown conundrum problem.
+* Another blog site I found interesting was Jeremy Boyd blog found [here.](http://www.jeremy-boyd.com/2010/10/18/compute-all-permutations-of-a-string-in-python/) There were two solutions to the permutations problem, one had a duplicates issue the other had not any such issues. Both worked fairly well. I'm currently using a slightly modified version of his solutions.
+* The site [here](http://www.tutorialspoint.com/python/) contains some great resources and tips about using python. I found it extremely helpful.

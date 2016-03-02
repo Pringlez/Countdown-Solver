@@ -1,16 +1,18 @@
 # Anagram Solver - John Walsh
 # G00299626
-# Version 1a
+# Version 1b
 
 import random
 import timeit
 
-word_list = 'final.wordlist-2.txt'
+from itertools import permutations
+
+wordlListFile = 'final.wordlist-2.txt'
 
 vowelsList = list()
 consonantsList = list()
 wordmap = dict()
-userOptions = True
+userOptions = False
 
 # Builds the vowels & consonants lists
 def build_letter_lists():
@@ -61,14 +63,12 @@ def build_letter_lists():
 # Builds the wordmap dictionary
 def build_dictionary(filename):
     f = open(filename, 'r')
-    counter = 0
     # Continue looping until end of file is encountered
     for word in f:
         word = word.rstrip()
         hash_key = hash(''.join(sorted(word)))
         if hash_key in wordmap:
             wordmap.get(hash_key).append(word)
-            counter += 1
         else:
             wordmap.update({hash_key:[word]})
         
@@ -86,7 +86,7 @@ def get_option():
 
 # Get user's conundrum string of letters
 def get_userstring():
-    print("\nMust be at least four consonants, three vowels & nine letters max")
+    print("\nMust be at least four consonants, three vowels & nine letters max!")
     return input('Enter String: ')
 
 # Create a random conundrum, depending on random number generated 
@@ -130,21 +130,54 @@ def process_option(option):
         else:
             print("\nPlease enter a valid option!")
 
-# Gets the longest anagram in a string of characters
-def get_best_anagram(conundrum, length):
-    # Sorting the conundrum & hashing key to search the wordmap
-    anagram_list = check_dictionary(conundrum)
-    # If not null / none then display best anagram(s)
-    if anagram_list is not None:
-        print("Anagram(s): " + ', '.join(anagram_list))
-    else:
-        # Recursively call this function to check for anagrams of varying length
-        # Continue to call until conundrum length is lower then four
-        if(len(conundrum) > 3):
-            length -= 1
-            get_best_anagram(conundrum[:length], length)
+# Gets the longest anagram from the passed string of characters
+def get_anagram(conundrum, length):
+    
+    print("Looking for Anagram(s) of Length: %d" % length)
+    
+    # If length equals conundrum length then check conundrum against wordmap
+    # Basically its checking if its the first time this function has been executed
+    if(len(conundrum) == length):
+        anagramsList = check_dictionary(conundrum)
+        # If not null / none then display best anagram(s)
+        if(anagramsList is not None):
+            print("\nAnagram(s): " + ', '.join(anagramsList) + "\n")
         else:
-            print("Anagram(s): None Found!")
+            # Start a recursive call to this function to check for anagrams of varying length
+            # Continue to call until conundrum length is lower then four
+            length -= 1
+            get_anagram(conundrum, length)
+    # Else, continue to look for anagram(s) of length lower then conundrum
+    else:
+        anagramsDict = dict()
+        anagramsList = list()
+        
+        # Looping through the permutations & checking against dictionary
+        # If ana anagram is found store it in a dict structure
+        # This is currently the slowest part of the algorithm
+        for perm in get_perms(conundrum):
+            anagramsTempList = check_dictionary(perm[:length])
+            if anagramsTempList is not None:
+                anagram = ''.join(anagramsTempList)
+                if(anagram not in anagramsDict):
+                    anagramsDict[''.join(anagramsTempList)] = ""
+                    
+        # If anagramsDict contains anagrams then loop through them & add them to list to print
+        if anagramsDict:
+            for anagram, value in anagramsDict.items():
+                anagramsList.append(anagram)
+            print("\nAnagram(s): " + ', '.join(anagramsList) + "\n")
+        else:
+            # Keep looping through until length of four letters
+            length -= 1
+            if(length > 3):
+                get_anagram(conundrum, length)
+            else:
+                print("\nAnagram(s): None Found!\n")
+
+# Get perms of the conundrum & return list
+def get_perms(conundrum):
+    return [''.join(p) for p in permutations(conundrum)]
         
 # Checks wordmap dictionary if word exists for conundrum
 def check_dictionary(conundrum):
@@ -154,24 +187,27 @@ def check_dictionary(conundrum):
 # Preprocess the dictionary & letter lists
 def preprocess():
     print("\nPreprocessing...")
-    build_dictionary(word_list)
+    build_dictionary(wordlListFile)
     build_letter_lists()
 
 # Runs the application
 def run_app():
-    #conundrum = "decuionat"
+    conundrum = "decuionat"
     #conundrum = "decuienag"
-    conundrum = "infish"
+    #conundrum = "oaiesdttr"
+    #conundrum = "abcdefghi"
+    #conundrum = "infish"
+    #conundrum = "iiiiiiiii"
     
     if(userOptions == True):
         while 1:
             conundrum = process_option(get_option())
-            print("\nConundrum: " + conundrum)
+            print("\nConundrum: " + conundrum + "\n")
             if(conundrum is not None):
-                get_best_anagram(conundrum, len(conundrum))
+                get_anagram(conundrum, len(conundrum))
     else:
-        print("\nConundrum: " + conundrum)
-        get_best_anagram(conundrum, len(conundrum))
+        print("\nConundrum: " + conundrum + "\n")
+        get_anagram(conundrum, len(conundrum))
 
 # Timing the algorithm
 if(userOptions != True):
