@@ -1,6 +1,6 @@
 # Anagram Solver - John Walsh
 # G00299626
-# Version 1c
+# Version 1d
 
 import random
 import timeit
@@ -66,7 +66,7 @@ def build_dictionary(filename):
     # Continue looping until end of file is encountered
     for word in f:
         word = word.rstrip()
-        hash_key = hash(''.join(sorted(word)))
+        hash_key = ''.join(sorted(word))
         if hash_key in wordmap:
             wordmap.get(hash_key).append(word)
         else:
@@ -131,8 +131,9 @@ def process_option(option):
             print("\nPlease enter a valid option!")
 
 # Gets the longest anagram from the passed string of characters - Version 1
-# Uses the more brute force approach of permutations to find all anagrams
-# Current implementation of this function is slow at seven seconds worst case scenario
+# Current implementation of this function is recursive, if a nine letter anagram is not found
+# Also uses the more brute force approach of permutations to find all anagrams
+# It's about 7 seconds worst case scenario
 def get_anagram_1(conundrum, length):
     
     print("Looking for Anagram(s) of Length: %d" % length)
@@ -177,24 +178,28 @@ def get_anagram_1(conundrum, length):
                 print("\nAnagram(s): None Found!\n")
                 
 # Gets the longest anagram from the passed string of characters - Version 2
-# Current implementation of this function will not find every anagram possible but is much faster then
-# version 1 'get_anagram_1' at about one second worst case scenario
+# Current implementation of this function will not find every anagram possible but is superior in speed compared to version 1
+# It compares the modified ordering of the conundrum to the dictionary to find anagrams, similar to version 3
+# It's about 0.1 to 2 seconds worst case scenario
 def get_anagram_2(conundrum, length):
     
     anagramFound = False
-    
+    # Looping until an anagram is found or length is lower then four
     while(length > 3 and anagramFound == False):
         
         print("Looking for Anagram(s) of Length: %d" % length)
         
-        # Looking for anagrams of length nine, much faster to check for them here than going into for loop below
+        # Looking for anagrams of length nine, theres no need to loop through and swap letters 
+        # around to find nine letter anagrams because of the hashing 
         if(length > 8):
-            anagramsList = check_dictionary(conundrum)
-            length -= 1
-            if anagramsList is not None:
-                print("\nAnagram(s): " + ', '.join(anagramsList) + "\n")
+            anagrams = check_dictionary(conundrum)
+            if anagrams is not None:
+                print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
                 anagramFound = True
                 break
+        
+        # Defining a list to store anagrams
+        anagrams = list()
         
         # Loop through length of conundrum to switch up / swap characters to loop for anagrams
         # Loop break outs after anagram(s) have been found, faster then getting full permutations of conundrum
@@ -202,42 +207,81 @@ def get_anagram_2(conundrum, length):
             
             # Swaping two letter from the front to the back
             # Then checking the conundrum against the dictionary
-            anagramTemp = conundrum[i:len(conundrum)] + conundrum[0:i]
-            anagramsCheckListA = check_dictionary(anagramTemp[0:len(conundrum)][0:length])
+            stringTemp = conundrum[i:len(conundrum)] + conundrum[0:i]
+            anagramsA = check_dictionary(stringTemp[0:len(conundrum)][0:length])
             # Also checking the conundrum in reverse using the [::-1] string operation
             # Sometimes it yields better results, this is why I use both approaches
-            anagramsCheckListB = check_dictionary((anagramTemp[0:len(conundrum)][::-1][0:length]))
+            anagramsB = check_dictionary((stringTemp[0:len(conundrum)][::-1][0:length]))
             
             # If both anagram(s) check lists are not null then append them to 'anagrams' list
-            if anagramsCheckListA and anagramsCheckListB is not None:
-                anagrams = ', '.join(anagramsCheckListA)
-                # Checking if anagram is already in list
-                for anagram in anagramsCheckListB:
-                    # If not already in list append anagram
-                    if(anagram not in anagrams):
-                        anagrams.append(anagram)
+            if anagramsA and anagramsB is not None:
+                anagrams = anagramsA + list(set(anagramsB) - set(anagramsA))
                 anagramFound = True
-                break
-            elif anagramsCheckListA is not None:
-                # If the returned 'anagramsCheckListA' list wasn't null then add any anagram(s) to 'anagrams' list
-                anagrams = ', '.join(anagramsCheckListA)
-                # Breaking out of the loop
+            elif anagramsA is not None:
+                anagrams = anagramsA
                 anagramFound = True
-                break
-            elif anagramsCheckListB is not None:
-                # If the returned 'anagramsCheckListB' list wasn't null then add any anagram(s) to 'anagrams' list
-                anagrams = ', '.join(anagramsCheckListB)
-                # Breaking out of the loop
+            elif anagramsB is not None:
+                anagrams = anagramsB
                 anagramFound = True
-                break
+            
         # If anagrams were found then print & break loop
-        if(anagramFound):
-            print("\nAnagram(s): " + anagrams + "\n")
+        if anagrams:
+            print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
+            anagramFound = True
             break
         # Decrement conundrum length variable, loop again
         length -= 1
         # If no anagrams found then print & exit break while loop
         # Limited search of anagrams to four characters in length 
+        if(length < 4):
+            print("\nAnagram(s): None Found!\n")
+            break
+
+# Gets the longest anagram from the passed string of characters - Version 3
+# Current implementation of this function is slightly better then verson 2, but will not find
+# every anagram possible but its just as fast and I believe slightly more efficient
+# Note: It's an implementation that deals in chance. Everytime your run it could display different results
+# It's about 0.1 to 0.4 of a second worst case scenario
+def get_anagram_3(conundrum, length):
+    
+    anagramFound = False
+    # Looping until an anagram is found or length is lower then four
+    while(length > 3 and anagramFound == False):
+        
+        print("Looking for Anagram(s) of Length: %d" % length)
+        
+        # Looking for anagrams of length nine, theres no need to loop through and swap letters 
+        # around to find nine letter anagrams because of the hashing 
+        if(length > 8):
+            anagrams = check_dictionary(conundrum)
+            if anagrams is not None:
+                print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
+                anagramFound = True
+                break
+        
+        # Defining a list to store anagrams
+        anagrams = list()
+            
+        # Looping through 'X' amount of times to get anagrams from the dictionary
+        # Note: Increase the loop count to get more hits, but this will increase the compute time
+        for i in range(0, 750):
+            # Randomly check against the dictionary by shuffling the letter in the conundrum
+            # Limiting the length by using [0:length]
+            anagramsCheck = check_dictionary(''.join(random.sample(conundrum,len(conundrum))[0:length]))
+            # If not null then add the anagrams found to a global list variable 'anagrams'
+            if anagramsCheck is not None:
+                # Removing the duplicates from the list first, then combined both lists
+                anagrams = anagrams + list(set(anagramsCheck) - set(anagrams))
+            
+        # If anagrams were found then print & break loop
+        if anagrams:
+            print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
+            anagramFound = True
+            break
+        # Decrement conundrum length variable, loop again
+        length -= 1
+        # If no anagrams found then print & exit break while loop
+        # Limited search of anagrams to four characters in length
         if(length < 4):
             print("\nAnagram(s): None Found!\n")
             break
@@ -248,7 +292,7 @@ def get_perms(conundrum):
         
 # Checks wordmap dictionary if word exists for conundrum
 def check_dictionary(conundrum):
-    return wordmap.get(hash(''.join(sorted(conundrum))))
+    return wordmap.get(''.join(sorted(conundrum)))
 
 # Preprocess the dictionary & letter lists
 def preprocess():
@@ -266,18 +310,19 @@ def run_app():
     #conundrum = "infish"
     #conundrum = "iiiiiiiii"
     
+    print("\nConundrum: " + conundrum + "\n")
+    
     if(userOptions == True):
         while 1:
             conundrum = process_option(get_option())
-            print("\nConundrum: " + conundrum + "\n")
             if(conundrum is not None):
-                get_anagram_1(conundrum, len(conundrum))
+                get_anagram_3(conundrum, len(conundrum))
     else:
-        print("\nConundrum: " + conundrum + "\n")
-        # You can swap the implementation of 'get_anagram_X' for either version 1 or 2
-        # 'get_anagram_1' or 'get_anagram_2'
+        # You can swap the implementation of 'get_anagram_X' for either version 1, 2 and 3
+        # 'get_anagram_1', 'get_anagram_2' and 'get_anagram_3'
         # Both implementations use the same hashmap / wordmap to check for anagrams
-        get_anagram_2(conundrum, len(conundrum))
+        get_anagram_3(conundrum, len(conundrum))
+
 
 # Timing the algorithm
 if(userOptions != True):

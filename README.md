@@ -165,6 +165,53 @@ This version basically swaps letters from the beginning to the end of the string
                 print("\nAnagram(s): None Found!\n")
                 break
 ```
+Version of the solver function basically loops and shuffles the letters into a mix that’s then checked against the dictionary.
+Surprisingly this performs the best from the other version of the solver function, there really isn't any need to loop more than 1000 times to find most anagrams from the conundrum.
+```python
+def get_anagram_3(conundrum, length):
+    
+    anagramFound = False
+    # Looping until an anagram is found or length is lower then four
+    while(length > 3 and anagramFound == False):
+        
+        print("Looking for Anagram(s) of Length: %d" % length)
+        
+        # Looking for anagrams of length nine, theres no need to loop through and swap letters 
+        # around to find nine letter anagrams because of the hashing 
+        if(length > 8):
+            anagrams = check_dictionary(conundrum)
+            if anagrams is not None:
+                print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
+                anagramFound = True
+                break
+        
+        # Defining a list to store anagrams
+        anagrams = list()
+            
+        # Looping through 'X' amount of times to get anagrams from the dictionary
+        # Note: Increase the loop count to get more hits, but this will increase the compute time
+        for i in range(0, 750):
+            # Randomly check against the dictionary by shuffling the letter in the conundrum
+            # Limiting the length by using [0:length]
+            anagramsCheck = check_dictionary(''.join(random.sample(conundrum,len(conundrum))[0:length]))
+            # If not null then add the anagrams found to a global list variable 'anagrams'
+            if anagramsCheck is not None:
+                # Removing the duplicates from the list first, then combined both lists
+                anagrams = anagrams + list(set(anagramsCheck) - set(anagrams))
+            
+        # If anagrams were found then print & break loop
+        if anagrams:
+            print("\nAnagram(s): " + ', '.join(anagrams) + "\n")
+            anagramFound = True
+            break
+        # Decrement conundrum length variable, loop again
+        length -= 1
+        # If no anagrams found then print & exit break while loop
+        # Limited search of anagrams to four characters in length
+        if(length < 4):
+            print("\nAnagram(s): None Found!\n")
+            break
+```
 
 ## Preprocessing
 The solver script performs some preprocessing initially to build the lists for the random conundrum generator. The letter frequencies of the lists of vowels and consonants were taken from [here.](http://www.thecountdownpage.com/letters.htm)
@@ -180,18 +227,38 @@ The function 'preprocess' handles the dictionary & lists generation. You can mov
 ## Efficiency
 The solver script has a number of different approaches to improve the overall speed of the algorithm. It first takes a random conundrum and sorts the letters which is then passed into a hashing function that will compute a key integer. The key is then passed into the wordmap to be checked against the stored hash keys. Normally words conflict when this hash table is generated, to counteract this words are place on lists much like how conflictions in a [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html) are handled in the programming language Java.
 
+The word hashing approach is fairly quick, version 3 of the 'get_anagram_X' function performs relatively well in run time speed. It currently computes the result at about 0.2 of a second, version 1 sits at about 2 to 7 seconds in runtime.
+
 There are number of problems that still exist in the solver script:
-* Anagrams of length eight or lower are not generated efficiently enough
-* The pre-processing required takes longer than expected
-* Hashing words to the dictionary is a slow process, might need changing later
+* Anagrams of length eight or lower are not generated efficiently enough I believe in certain instances
+* The pre-processing required takes longer than expected, at about 1.5 seconds
+* Hashing words to the dictionary can be quite slow, needs to be cleaned up
 
 ## Results
-My script runs very quickly, and certainly within the 30 seconds allowed in the countdown letters game.
+The different versions of the solver function 'get_anagram_X', version 1, 2 and 3. Their weaknesses and strengths listed below:
+
+#### Version 1
+* Current implementation of this function is recursive, if a nine letter anagram is not found
+* Also uses the more brute force approach of permutations to find all anagrams
+* It's about 7 seconds worst case scenario
+
+#### Version 2
+* Current implementation of this function will not find every anagram possible but is superior in speed compared to version 1
+* It compares the modified ordering of the conundrum to the dictionary to find anagrams, similar to version 3
+* It's about 0.1 to 2 seconds worst case scenario
+
+#### Version 3
+* Current implementation of this function is slightly better than version 2, but will not find every anagram possible but it’s just as fast and I believe slightly more efficient
+* Note: It's an implementation that deals in chance. Every time your run it could display different results
+* It's about 0.1 to 0.4 of a second worst case scenario
+
+I've found that version 3 of the solver function performs the best in terms of performance, it finds most of the anagrams in split seconds compared to 2 to 7 seconds in version 1. Version 2 implementation still needs work to perform as good as version 2 I believe, it still finds anagrams but will not currently find as many as version 2 of the solver function.
 
 ## References
-Below are references to algorithms, word lists and other research sources found online.
+Below are references to algorithms, word lists and other research sources found online:
 
 * The following link [here](http://stackoverflow.com/questions/8286554/find-anagrams-for-a-list-of-words) contains useful information when I first starting search for ideas on how to approach this countdown conundrum problem.
 * Another blog site I found interesting was Jeremy Boyd blog found [here.](http://www.jeremy-boyd.com/2010/10/18/compute-all-permutations-of-a-string-in-python/) There were two solutions to the permutations problem, one had a duplicates issue the other had not any such issues. Both worked fairly well. I'm currently using a slightly modified version of his solutions.
 * The site [here](http://www.tutorialspoint.com/python/) contains some great resources and tips about using python. I found it extremely helpful.
 * This post in Stackoverflow [here](http://stackoverflow.com/questions/931092/reverse-a-string-in-python) was quite useful in reversing a string.
+* Another helpful resource on anagrams searching [here](http://python-for-analysts.pythonblogs.com/211_python-for-analysts/archive/1258_python_for_newbies_a_simple_anagram_finder.html)
