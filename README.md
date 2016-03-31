@@ -17,6 +17,7 @@ Version 1 of the word list has been compiled from a number different sources, MI
 #### Version 2
 Version 2 of the word list is entirely made up of word lists from the site 'www.bestwordlist.com', every word of length four to nine letter long. I've included the script used to compile these word lists together.
 
+#### References
 Here is the most up-to date references to these word lists.
 * The following word lists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as some words are names of cities, towns and other locations. The link to the resource [here.](http://wordlist.aspell.net/dicts)
 * Another site that contains lists of words with their frequencies, mainly for use in spell checker programs. The link to the resource [here.](http://www.kilgarriff.co.uk/bnc-readme.html)
