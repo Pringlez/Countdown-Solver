@@ -9,10 +9,18 @@ The countdown solver must find the longest possible word from a dictionary file 
 A number of countdown solvers already exist on the internet. To be filled later...
 
 ## Words Lists
-I've compiled a number of different word lists from different sites and web applications. Here is the most up-to date references to these word lists.
+I've compiled a two different word lists from different sites and web applications. 
 
+#### Version 1
+Version 1 of the word list has been compiled from a number different sources, MIT, kali linux and the nine letter word list from 'www.bestwordlist.com'. I've also included the script written to combine these word lists.
+
+#### Version 2
+Version 2 of the word list is entirely made up of word lists from the site 'www.bestwordlist.com', every word of length four to nine letter long. I've included the script used to compile these word lists together.
+
+Here is the most up-to date references to these word lists.
 * The following word lists are used by spell checkers and other programs, seems to contain quite extensive lists. May not be the best as some words are names of cities, towns and other locations. The link to the resource [here.](http://wordlist.aspell.net/dicts)
 * Another site that contains lists of words with their frequencies, mainly for use in spell checker programs. The link to the resource [here.](http://www.kilgarriff.co.uk/bnc-readme.html)
+* The following site features the ability to filter the length of words wanted, very useful site. The link is [here.](http://www.bestwordlist.com/)
 
 ## Python Script
 The solver script located in the 'solver' directory. The script is quite basic really, it uses the hash function to map words to a directory structure. This allows the particular conundrum to be checked against the word map in quick succession.
@@ -165,7 +173,7 @@ This version basically swaps letters from the beginning to the end of the string
                 print("\nAnagram(s): None Found!\n")
                 break
 ```
-Version of the solver function basically loops and shuffles the letters into a mix that’s then checked against the dictionary.
+This version of the solver function basically loops and shuffles the letters into a mix that’s then checked against the dictionary.
 Surprisingly this performs the best from the other version of the solver function, there really isn't any need to loop more than 1000 times to find most anagrams from the conundrum.
 ```python
 def get_anagram_3(conundrum, length):
