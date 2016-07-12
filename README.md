@@ -5,8 +5,6 @@
 ### Goal
 The game countdown requires a word of nine random letters which must contain at least three vowels and four consonants.
 The countdown solver must find the longest possible word from a dictionary file loaded into the program. It must be an anagram of some or all of the letters in the generated word.
-### Background
-A number of countdown solvers already exist on the internet. To be filled later...
 
 ## Words Lists
 I've compiled a two different word lists from different sites and web applications. 
